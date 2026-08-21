@@ -13,6 +13,8 @@ import {
   type LangCode,
 } from "@/lib/chat-data";
 import { translateText } from "@/lib/translate";
+import { ProfileEditDialog, type ProfileDraft } from "./ProfileEditDialog";
+import { SettingsDialog } from "./SettingsDialog";
 import avatarAsset from "@/assets/avatar-amit.jpg";
 
 export function ChatPlatform() {
@@ -23,8 +25,16 @@ export function ChatPlatform() {
   const [lang, setLang] = useState<LangCode>("en");
   const [autoTranslate, setAutoTranslate] = useState(false);
   const [typing, setTyping] = useState(false);
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(true);
   const [profileOpen, setProfileOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [meOpen, setMeOpen] = useState(false);
+  const [clientOpen, setClientOpen] = useState(false);
+  const [me, setMe] = useState<ProfileDraft>({
+    avatar: avatarAsset,
+    name: "Amit Sharma",
+    role: "Workspace Admin",
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
@@ -150,7 +160,13 @@ export function ChatPlatform() {
     <TooltipProvider delayDuration={200}>
       <main className="flex h-screen w-full overflow-hidden bg-background p-0 lg:p-4">
         <div className="glass flex h-full w-full overflow-hidden rounded-none shadow-float lg:rounded-[32px]">
-          <IconRail avatar={avatarAsset} dark={dark} onToggleTheme={() => setDark((v) => !v)} />
+          <IconRail
+            avatar={me.avatar}
+            dark={dark}
+            onToggleTheme={() => setDark((v) => !v)}
+            onOpenSettings={() => setSettingsOpen(true)}
+            onOpenProfile={() => setMeOpen(true)}
+          />
           <div className="hidden md:flex">
             <ConversationList
               conversations={items}
@@ -158,7 +174,7 @@ export function ChatPlatform() {
               onSelect={select}
               onNewChat={newChat}
               onToggleFavorite={(id) => patch(id, (c) => ({ ...c, favorite: !c.favorite }))}
-              avatar={avatarAsset}
+              avatar={me.avatar}
             />
           </div>
           <ChatWindow
@@ -171,7 +187,7 @@ export function ChatPlatform() {
             onSend={send}
             onAttach={attach}
             onReact={react}
-            myAvatar={avatarAsset}
+            myAvatar={me.avatar}
             profileOpen={profileOpen}
             onToggleProfile={() => setProfileOpen((v) => !v)}
           />
@@ -181,10 +197,71 @@ export function ChatPlatform() {
                 conversation={active}
                 onClose={() => setProfileOpen(false)}
                 onToggleFavorite={() => patch(active.id, (c) => ({ ...c, favorite: !c.favorite }))}
+                onEditProfile={() => setClientOpen(true)}
               />
             </div>
           )}
         </div>
+
+        <SettingsDialog
+          open={settingsOpen}
+          onOpenChange={setSettingsOpen}
+          dark={dark}
+          onToggleTheme={() => setDark((v) => !v)}
+          lang={lang}
+          onLangChange={setLang}
+          autoTranslate={autoTranslate}
+          onToggleAutoTranslate={() => setAutoTranslate((v) => !v)}
+          onOpenProfile={() => setMeOpen(true)}
+        />
+
+        <ProfileEditDialog
+          open={meOpen}
+          onOpenChange={setMeOpen}
+          mode="me"
+          value={me}
+          onSave={setMe}
+        />
+
+        <ProfileEditDialog
+          open={clientOpen}
+          onOpenChange={setClientOpen}
+          mode="client"
+          value={{
+            avatar: active.avatar,
+            name: active.profile.name,
+            role: active.profile.role,
+            company: active.profile.company,
+            email: active.profile.email,
+            phone: active.profile.phone,
+            location: active.profile.location,
+            language: active.profile.language,
+            tags: active.profile.tags.join(", "),
+            notes: active.profile.notes,
+          }}
+          onSave={(next) =>
+            patch(active.id, (c) => ({
+              ...c,
+              avatar: next.avatar,
+              title: next.name,
+              profile: {
+                ...c.profile,
+                name: next.name,
+                role: next.role,
+                company: next.company || c.profile.company,
+                email: next.email || c.profile.email,
+                phone: next.phone || c.profile.phone,
+                location: next.location || c.profile.location,
+                language: next.language || c.profile.language,
+                tags: (next.tags ?? "")
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter(Boolean),
+                notes: next.notes ?? c.profile.notes,
+              },
+            }))
+          }
+        />
       </main>
     </TooltipProvider>
   );

@@ -68,6 +68,7 @@ function Bubble({
   avatar,
   name,
   myAvatar,
+  onLangChange,
 }: {
   msg: Message;
   lang: LangCode;
@@ -76,6 +77,7 @@ function Bubble({
   avatar: string;
   name: string;
   myAvatar: string;
+  onLangChange: (l: LangCode) => void;
 }) {
   const [translated, setTranslated] = useState(false);
   const mine = msg.from === "me";
@@ -215,10 +217,13 @@ function Bubble({
               {r}
             </button>
           ))}
-          {msg.kind !== "file" && lang !== "en" && (
+          {msg.kind !== "file" && (
             <button
               type="button"
-              onClick={() => setTranslated((v) => !v)}
+              onClick={() => {
+                if (lang === "en") onLangChange("hi");
+                setTranslated((v) => !v);
+              }}
               disabled={busy}
               className="press flex items-center gap-1 rounded-full border border-border/60 bg-card px-2 py-0.5 text-[11px] font-semibold text-brand shadow-3d"
             >
@@ -395,6 +400,28 @@ export function ChatWindow({
           <TooltipContent>{profileOpen ? "Hide client profile" : "Show client profile"}</TooltipContent>
         </Tooltip>
 
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label="Real-time translation"
+              aria-pressed={autoTranslate}
+              onClick={onToggleAutoTranslate}
+              className={cn(
+                "press grid size-9 shrink-0 place-items-center rounded-full border border-border/70 shadow-3d",
+                autoTranslate
+                  ? "bg-brand-gradient text-brand-foreground shadow-glow"
+                  : "bg-card text-muted-foreground hover:text-brand",
+              )}
+            >
+              <Languages className="size-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {autoTranslate ? "Real-time translation ON" : "Real-time translation OFF"}
+          </TooltipContent>
+        </Tooltip>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -444,6 +471,7 @@ export function ChatWindow({
             avatar={conversation.avatar}
             name={conversation.title}
             myAvatar={myAvatar}
+            onLangChange={onLangChange}
           />
 
         ))}
