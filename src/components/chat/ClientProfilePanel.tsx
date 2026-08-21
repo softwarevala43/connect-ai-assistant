@@ -17,6 +17,8 @@ import {
   Sparkles,
   X,
   ChevronRight,
+  Camera,
+  Pencil,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -51,10 +53,12 @@ export function ClientProfilePanel({
   conversation,
   onClose,
   onToggleFavorite,
+  onEditProfile,
 }: {
   conversation: Conversation;
   onClose: () => void;
   onToggleFavorite: () => void;
+  onEditProfile: () => void;
 }) {
   const p = conversation.profile;
   const [muted, setMuted] = useState(false);
@@ -93,8 +97,16 @@ export function ClientProfilePanel({
             className="size-20 rounded-3xl bg-card object-cover shadow-3d ring-1 ring-border/60"
           />
           {conversation.online && (
-            <span className="absolute -right-1 -bottom-1 size-4 rounded-full bg-online ring-2 ring-background" />
+            <span className="absolute -top-1 -right-1 size-4 rounded-full bg-online ring-2 ring-background" />
           )}
+          <button
+            type="button"
+            aria-label="Change client photo"
+            onClick={onEditProfile}
+            className="press absolute -right-1 -bottom-1 grid size-8 place-items-center rounded-full bg-brand-gradient text-brand-foreground shadow-glow"
+          >
+            <Camera className="size-4" />
+          </button>
         </div>
         <div>
           <p className="font-display text-base font-bold">{p.name}</p>
@@ -103,6 +115,14 @@ export function ClientProfilePanel({
         <span className="rounded-full bg-brand-gradient px-3 py-0.5 text-[10px] font-bold text-brand-foreground shadow-glow">
           {p.plan}
         </span>
+
+        <button
+          type="button"
+          onClick={onEditProfile}
+          className="press mt-1 flex items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1 text-[11px] font-semibold text-brand shadow-3d"
+        >
+          <Pencil className="size-3" /> Edit profile
+        </button>
 
         <div className="mt-1 flex items-center gap-2">
           {[
