@@ -103,15 +103,43 @@ export function IconRail({
           </TooltipTrigger>
           <TooltipContent side="right">{dark ? "Dark mode" : "Light mode"}</TooltipContent>
         </Tooltip>
-        <img
-          src={avatar}
-          alt="Amit Sharma"
-          loading="lazy"
-          width={48}
-          height={48}
-          className="size-12 rounded-2xl object-cover shadow-float ring-2 ring-brand/40"
-        />
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={onOpenSettings}
+              aria-label="Settings"
+              className="press grid size-12 place-items-center rounded-2xl border border-border/60 bg-card text-muted-foreground shadow-3d hover:text-brand"
+            >
+              <Settings className="size-5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Settings</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={onOpenProfile}
+              aria-label="My profile"
+              className="press size-12 overflow-hidden rounded-2xl shadow-float ring-2 ring-brand/40"
+            >
+              <img
+                src={avatar}
+                alt="My profile"
+                loading="lazy"
+                width={48}
+                height={48}
+                className="size-12 object-cover"
+              />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right">My profile</TooltipContent>
+        </Tooltip>
       </div>
+
     </aside>
   );
 }
