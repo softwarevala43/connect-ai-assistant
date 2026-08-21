@@ -124,8 +124,8 @@ export function useConversationRealtime(options: {
 }
 
 export interface PendingMessage extends ChatMessage {
-  optimistic: { state: "pending" | "failed"; error?: string };
-  draftFiles?: DraftAttachment[];
+  optimistic: { state: "pending" | "failed"; error?: string | undefined };
+  draftFiles?: DraftAttachment[] | undefined;
 }
 
 /** Send pipeline with pending / failed / retry state and real attachment uploads. */
@@ -165,7 +165,7 @@ export function useSendMessage(conversationId: string | null, userId: string | n
   }, []);
 
   const send = useCallback(
-    async (input: { body: string; parentId?: string | null; mentions?: string[]; files?: DraftAttachment[] }) => {
+    async (input: { body: string; parentId?: string | null | undefined; mentions?: string[] | undefined; files?: DraftAttachment[] | undefined }) => {
       if (!conversationId || !userId) return;
       const files = input.files ?? uploads;
       const clientRef = `c-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;

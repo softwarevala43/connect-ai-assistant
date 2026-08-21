@@ -169,10 +169,10 @@ export async function insertMessage(input: {
   conversationId: string;
   senderId: string;
   body: string;
-  parentId?: string | null;
-  kind?: string;
+  parentId?: string | null | undefined;
+  kind?: string | undefined;
   clientRef: string;
-  mentions?: string[];
+  mentions?: string[] | undefined;
 }) {
   const { data, error } = await supabase
     .from("messages")
@@ -335,7 +335,7 @@ export async function searchDirectory(term: string, excludeId: string): Promise<
 export async function createConversation(input: {
   subject: string;
   kind: string;
-  referenceCode?: string | null;
+  referenceCode?: string | null | undefined;
   createdBy: string;
   participantIds: string[];
 }) {

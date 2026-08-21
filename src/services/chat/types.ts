@@ -83,7 +83,7 @@ export interface ChatMessage {
   pinned: boolean;
   replyCount: number;
   /** Present only for optimistic rows that have not been persisted yet. */
-  optimistic?: { state: DeliveryState; error?: string };
+  optimistic?: { state: DeliveryState; error?: string | undefined } | undefined;
 }
 
 export interface DraftAttachment {
@@ -91,8 +91,8 @@ export interface DraftAttachment {
   file: File;
   progress: number;
   state: "queued" | "uploading" | "done" | "failed" | "cancelled";
-  error?: string;
-  storagePath?: string;
+  error?: string | undefined;
+  storagePath?: string | undefined;
   mediaKind: MediaKind;
 }
 
