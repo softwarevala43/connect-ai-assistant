@@ -1,11 +1,11 @@
-import logoAsset from "@/assets/software-vala-logo.jpg.asset.json";
+import logoAsset from "@/assets/software-vala-logo.jpg";
 import client1 from "@/assets/client-1.jpg";
 import client2 from "@/assets/client-2.jpg";
 import client3 from "@/assets/client-3.jpg";
 import client4 from "@/assets/client-4.jpg";
 import client5 from "@/assets/client-5.jpg";
 
-export const valaLogo = logoAsset.url;
+export const valaLogo = logoAsset;
 
 export type MsgKind = "text" | "list" | "file";
 

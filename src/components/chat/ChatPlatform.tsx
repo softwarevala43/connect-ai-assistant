@@ -13,7 +13,7 @@ import {
   type LangCode,
 } from "@/lib/chat-data";
 import { translateText } from "@/lib/translate";
-import avatarAsset from "@/assets/avatar-amit.jpg.asset.json";
+import avatarAsset from "@/assets/avatar-amit.jpg";
 
 export function ChatPlatform() {
   const [items, setItems] = useState<Conversation[]>(() =>
@@ -150,7 +150,7 @@ export function ChatPlatform() {
     <TooltipProvider delayDuration={200}>
       <main className="flex h-screen w-full overflow-hidden bg-background p-0 lg:p-4">
         <div className="glass flex h-full w-full overflow-hidden rounded-none shadow-float lg:rounded-[32px]">
-          <IconRail avatar={avatarAsset.url} dark={dark} onToggleTheme={() => setDark((v) => !v)} />
+          <IconRail avatar={avatarAsset} dark={dark} onToggleTheme={() => setDark((v) => !v)} />
           <div className="hidden md:flex">
             <ConversationList
               conversations={items}
@@ -158,7 +158,7 @@ export function ChatPlatform() {
               onSelect={select}
               onNewChat={newChat}
               onToggleFavorite={(id) => patch(id, (c) => ({ ...c, favorite: !c.favorite }))}
-              avatar={avatarAsset.url}
+              avatar={avatarAsset}
             />
           </div>
           <ChatWindow
@@ -171,7 +171,7 @@ export function ChatPlatform() {
             onSend={send}
             onAttach={attach}
             onReact={react}
-            myAvatar={avatarAsset.url}
+            myAvatar={avatarAsset}
             profileOpen={profileOpen}
             onToggleProfile={() => setProfileOpen((v) => !v)}
           />

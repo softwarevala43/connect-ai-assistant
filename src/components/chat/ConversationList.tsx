@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { Conversation } from "@/lib/chat-data";
-import logoAsset from "@/assets/software-vala-logo.jpg.asset.json";
+import logoAsset from "@/assets/software-vala-logo.jpg";
 
 const filters = ["All Chats", "Unread", "Favorites"] as const;
 
@@ -43,7 +43,7 @@ export function ConversationList({
     <section className="flex w-full shrink-0 flex-col border-r border-border/60 bg-sidebar/60 backdrop-blur-xl md:w-[330px]">
       <header className="flex items-center gap-3 px-6 pt-6">
         <img
-          src={logoAsset.url}
+          src={logoAsset}
           alt="Software Vala logo"
           width={44}
           height={44}
