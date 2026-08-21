@@ -400,6 +400,28 @@ export function ChatWindow({
           <TooltipContent>{profileOpen ? "Hide client profile" : "Show client profile"}</TooltipContent>
         </Tooltip>
 
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label="Real-time translation"
+              aria-pressed={autoTranslate}
+              onClick={onToggleAutoTranslate}
+              className={cn(
+                "press grid size-9 shrink-0 place-items-center rounded-full border border-border/70 shadow-3d",
+                autoTranslate
+                  ? "bg-brand-gradient text-brand-foreground shadow-glow"
+                  : "bg-card text-muted-foreground hover:text-brand",
+              )}
+            >
+              <Languages className="size-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {autoTranslate ? "Real-time translation ON" : "Real-time translation OFF"}
+          </TooltipContent>
+        </Tooltip>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
