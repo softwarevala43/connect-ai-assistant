@@ -32,12 +32,17 @@ export function IconRail({
   avatar,
   dark,
   onToggleTheme,
+  onOpenSettings,
+  onOpenProfile,
 }: {
   avatar: string;
   dark: boolean;
   onToggleTheme: () => void;
+  onOpenSettings: () => void;
+  onOpenProfile: () => void;
 }) {
   const [active, setActive] = useState(0);
+
 
   return (
     <aside className="hidden w-[76px] shrink-0 flex-col items-center justify-between border-r border-border/60 bg-sidebar/70 py-6 backdrop-blur-xl md:flex">
