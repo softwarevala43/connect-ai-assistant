@@ -68,6 +68,7 @@ function Bubble({
   avatar,
   name,
   myAvatar,
+  onLangChange,
 }: {
   msg: Message;
   lang: LangCode;
@@ -76,6 +77,7 @@ function Bubble({
   avatar: string;
   name: string;
   myAvatar: string;
+  onLangChange: (l: LangCode) => void;
 }) {
   const [translated, setTranslated] = useState(false);
   const mine = msg.from === "me";
@@ -215,10 +217,13 @@ function Bubble({
               {r}
             </button>
           ))}
-          {msg.kind !== "file" && lang !== "en" && (
+          {msg.kind !== "file" && (
             <button
               type="button"
-              onClick={() => setTranslated((v) => !v)}
+              onClick={() => {
+                if (lang === "en") onLangChange("hi");
+                setTranslated((v) => !v);
+              }}
               disabled={busy}
               className="press flex items-center gap-1 rounded-full border border-border/60 bg-card px-2 py-0.5 text-[11px] font-semibold text-brand shadow-3d"
             >
@@ -444,6 +449,7 @@ export function ChatWindow({
             avatar={conversation.avatar}
             name={conversation.title}
             myAvatar={myAvatar}
+            onLangChange={onLangChange}
           />
 
         ))}
