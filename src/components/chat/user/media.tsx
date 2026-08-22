@@ -46,8 +46,8 @@ export function UserAvatar({
   presence,
 }: {
   name: string;
-  avatarPath?: string | null;
-  className?: string;
+  avatarPath?: string | null | undefined;
+  className?: string | undefined;
   presence?: string | undefined;
 }) {
   const { url } = useSignedUrl("avatars", avatarPath ?? null);
