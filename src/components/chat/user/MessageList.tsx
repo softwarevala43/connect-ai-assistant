@@ -115,22 +115,27 @@ export function MessageList(props: MessageListProps) {
   const rows = useMemo<Row[]>(() => {
     const result: Row[] = [];
     let group: Extract<Row, { type: "group" }> | null = null;
-    for (const message of all) {
-      if (result.length === 0 || !sameDay((result[result.length - 1] as Row & { type: "group" }).items?.at(-1)?.created_at ?? message.created_at, message.created_at)) {
-        // date separator decided below
-      }
-      const previous = all[all.indexOf(message) - 1];
+    for (let i = 0; i < all.length; i++) {
+      const message = all[i]!;
+      const previous = i > 0 ? all[i - 1] : undefined;
       if (!previous || !sameDay(previous.created_at, message.created_at)) {
         result.push({ type: "date", key: `d-${message.created_at.slice(0, 10)}`, label: dayLabel(message.created_at) });
         group = null;
       }
       const gap = previous ? new Date(message.created_at).getTime() - new Date(previous.created_at).getTime() : Infinity;
-      const sameGroup = group && group.senderId === message.sender_id && gap < 5 * 60 * 1000 && !message.parent_id;
-      if (!sameGroup) {
-        group = { type: "group", key: `g-${message.id}`, senderId: message.sender_id, mine: message.sender_id === userId, items: [] };
-        result.push(group);
+      if (group && group.senderId === message.sender_id && gap < 5 * 60 * 1000 && !message.parent_id) {
+        group.items.push(message);
+      } else {
+        const next: Extract<Row, { type: "group" }> = {
+          type: "group",
+          key: `g-${message.id}`,
+          senderId: message.sender_id,
+          mine: message.sender_id === userId,
+          items: [message],
+        };
+        result.push(next);
+        group = next;
       }
-      group.items.push(message);
     }
     return result;
   }, [all, userId]);
