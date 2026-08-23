@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Bookmark, Check, CheckCheck, Languages, Loader2, MessageSquareReply, Pin,
   RotateCcw, ShieldCheck, Smile, Trash2, WifiOff,
@@ -24,6 +24,8 @@ interface MessageListProps {
   canReply: boolean;
   canBookmark: boolean;
   translateTarget: string;
+  autoTranslate?: boolean | undefined;
+  density?: "comfortable" | "compact" | undefined;
   highlightId?: string | null | undefined;
   onReact: (messageId: string, emoji: string, active: boolean) => void;
   onBookmark: (messageId: string, pinned: boolean, active: boolean) => void;
@@ -100,7 +102,7 @@ function ReceiptTick({ message, userId }: { message: ChatMessage; userId: string
 export function MessageList(props: MessageListProps) {
   const {
     messages, pending, userId, profilesById, typingUsers, connection,
-    canReact, canReply, canBookmark, translateTarget, highlightId,
+    canReact, canReply, canBookmark, translateTarget, autoTranslate, density, highlightId,
     onReact, onBookmark, onReply, onOpenThread, onRetry, onDiscard,
   } = props;
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -151,14 +153,28 @@ export function MessageList(props: MessageListProps) {
     el?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [highlightId]);
 
-  const translate = async (message: ChatMessage) => {
-    setTranslations((prev) => ({ ...prev, [message.id]: { loading: true } }));
-    const result = await translateMessage({ data: { text: message.body, target: translateTarget } });
-    setTranslations((prev) => ({
-      ...prev,
-      [message.id]: result.ok ? { loading: false, text: result.text } : { loading: false, error: result.error },
-    }));
-  };
+  const translate = useCallback(
+    async (message: ChatMessage) => {
+      setTranslations((prev) => ({ ...prev, [message.id]: { loading: true } }));
+      const result = await translateMessage({ data: { text: message.body, target: translateTarget } });
+      setTranslations((prev) => ({
+        ...prev,
+        [message.id]: result.ok ? { loading: false, text: result.text } : { loading: false, error: result.error },
+      }));
+    },
+    [translateTarget],
+  );
+
+  // Real-time auto translate: translate incoming messages as they arrive.
+  const attempted = useRef(new Set<string>());
+  useEffect(() => {
+    if (!autoTranslate) return;
+    for (const message of messages.slice(-25)) {
+      if (message.sender_id === userId || !message.body || attempted.current.has(message.id)) continue;
+      attempted.current.add(message.id);
+      void translate(message);
+    }
+  }, [autoTranslate, messages, userId, translate]);
 
   const renderMessage = (message: ChatMessage | PendingMessage, mine: boolean, first: boolean) => {
     const optimistic = message.optimistic;
@@ -190,7 +206,8 @@ export function MessageList(props: MessageListProps) {
 
           <div
             className={cn(
-              "min-w-0 rounded-2xl px-3 py-1.5 text-sm leading-6 shadow-sm",
+              "min-w-0 rounded-2xl text-sm shadow-sm",
+              density === "compact" ? "px-2.5 py-1 leading-5" : "px-3 py-1.5 leading-6",
               mine
                 ? "rounded-br-md bg-primary text-primary-foreground"
                 : "rounded-bl-md border border-border/60 bg-card",

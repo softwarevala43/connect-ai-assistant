@@ -57,7 +57,7 @@ export function Composer(props: ComposerProps) {
     const el = textareaRef.current;
     if (!el) return;
     el.style.height = "0px";
-    el.style.height = `${Math.min(el.scrollHeight, 112)}px`;
+    el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
   };
 
   useEffect(() => {
@@ -129,9 +129,9 @@ export function Composer(props: ComposerProps) {
   };
 
   return (
-    <div className="border-t border-border/60 bg-card/50 px-2 py-1.5 sm:px-3">
+    <div className="border-t border-border/60 bg-card/50 px-2 py-1 sm:px-3">
       {replyTo ? (
-        <div className="mb-1 flex items-center gap-2 rounded-lg border border-border/60 bg-secondary/50 px-2 py-1 text-xs">
+        <div className="mb-1 flex items-center gap-2 rounded-lg border border-border/60 bg-secondary/50 px-2 py-0.5 text-xs">
           <Reply className="size-3.5 shrink-0 text-primary" />
           <span className="min-w-0 flex-1 truncate">
             <span className="font-medium">Replying: </span>
@@ -195,7 +195,7 @@ export function Composer(props: ComposerProps) {
           </ul>
         ) : null}
 
-        <div className="flex items-end gap-1 rounded-xl border border-border/60 bg-background/70 px-1 py-1 transition-shadow focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/30">
+        <div className="flex items-end gap-0.5 rounded-lg border border-border/60 bg-background/70 px-1 py-0.5 transition-shadow focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/30">
           {canUpload ? (
             <>
               <input
@@ -217,10 +217,10 @@ export function Composer(props: ComposerProps) {
                     variant="ghost"
                     size="icon"
                     aria-label="Attach files"
-                    className="size-8 shrink-0 rounded-lg"
+                    className="size-7 shrink-0 rounded-md"
                     onClick={() => fileRef.current?.click()}
                   >
-                    <Paperclip className="size-4" />
+                    <Paperclip className="size-3.5" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Attach files</TooltipContent>
@@ -232,8 +232,8 @@ export function Composer(props: ComposerProps) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <PopoverTrigger asChild>
-                  <Button type="button" variant="ghost" size="icon" aria-label="Insert emoji" className="size-8 shrink-0 rounded-lg">
-                    <Smile className="size-4" />
+                  <Button type="button" variant="ghost" size="icon" aria-label="Insert emoji" className="size-7 shrink-0 rounded-md">
+                    <Smile className="size-3.5" />
                   </Button>
                 </PopoverTrigger>
               </TooltipTrigger>
@@ -271,7 +271,7 @@ export function Composer(props: ComposerProps) {
               notifyTyping();
             }}
             onKeyDown={onKeyDown}
-            className="max-h-28 min-h-[32px] flex-1 resize-none bg-transparent px-1.5 py-1 text-sm leading-6 outline-none placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-60"
+            className="max-h-24 min-h-[28px] flex-1 resize-none bg-transparent px-1.5 py-1 text-sm leading-5 outline-none placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-60"
           />
 
           <Tooltip>
@@ -282,9 +282,9 @@ export function Composer(props: ComposerProps) {
                 aria-label="Send message"
                 disabled={!canSend || sending || (!text.trim() && uploads.length === 0)}
                 onClick={() => void submit()}
-                className="size-8 shrink-0 rounded-lg"
+                className="size-7 shrink-0 rounded-md"
               >
-                {sending ? <Loader2 className="size-4 animate-spin" /> : <SendHorizontal className="size-4" />}
+                {sending ? <Loader2 className="size-3.5 animate-spin" /> : <SendHorizontal className="size-3.5" />}
               </Button>
             </TooltipTrigger>
             <TooltipContent>{enterToSend ? "Send (Enter)" : "Send"}</TooltipContent>
