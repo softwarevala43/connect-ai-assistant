@@ -57,7 +57,7 @@ export function Composer(props: ComposerProps) {
     const el = textareaRef.current;
     if (!el) return;
     el.style.height = "0px";
-    el.style.height = `${Math.min(el.scrollHeight, 112)}px`;
+    el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
   };
 
   useEffect(() => {
