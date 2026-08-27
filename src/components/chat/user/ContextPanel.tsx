@@ -99,9 +99,9 @@ export function ContextPanel({
                         {profile?.job_title || `@${profile?.handle ?? "member"}`}
                       </span>
                     </span>
-                    {p.role ? (
+                    {p.role_label ? (
                       <Badge variant="secondary" className="text-[10px]">
-                        {String(p.role)}
+                        {p.role_label}
                       </Badge>
                     ) : null}
                   </li>
