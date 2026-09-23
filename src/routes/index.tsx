@@ -1,26 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ChatPlatform } from "@/components/chat/ChatPlatform";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => {
+    throw redirect({ to: "/chat" });
+  },
   head: () => ({
     meta: [
-      { title: "Software Vala · Enterprise AI Communication Platform" },
+      { title: "Opening chat · Software Vala Enterprise Workspace" },
       {
         name: "description",
         content:
-          "Futuristic 3D enterprise chat workspace for Software Vala admins — AI assistant, live translation, emoji reactions, file sharing and analytics in one premium console.",
+          "Opening the Software Vala enterprise chat workspace with real-time messaging, receipts, translation and secure attachments.",
       },
-      { property: "og:title", content: "Software Vala · Enterprise AI Communication Platform" },
+      { property: "og:title", content: "Opening chat · Software Vala Enterprise Workspace" },
       {
         property: "og:description",
-        content:
-          "Premium 3D AI communication console with live translation, smart replies and enterprise-grade conversation management.",
+        content: "Real-time enterprise messaging with receipts, translation and secure attachments.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Index,
 });
-
-function Index() {
-  return <ChatPlatform />;
-}
