@@ -16,6 +16,8 @@ interface Props {
   userId: string;
   onSelect: (id: string) => void;
   onNew: () => void;
+  canCreate?: boolean | undefined;
+  profileAction?: React.ReactNode;
 }
 
 function relativeTime(iso: string) {
@@ -28,7 +30,7 @@ function relativeTime(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 }
 
-export function ConversationSidebar({ conversations, loading, activeId, userId, onSelect, onNew }: Props) {
+export function ConversationSidebar({ conversations, loading, activeId, userId, onSelect, onNew, canCreate = true, profileAction }: Props) {
   const [term, setTerm] = useState("");
   const [filter, setFilter] = useState<"all" | "unread" | "favorites">("all");
 
@@ -52,9 +54,14 @@ export function ConversationSidebar({ conversations, loading, activeId, userId, 
       <div className="space-y-3 border-b border-border/60 p-3">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">Conversations</h2>
-          <Button size="sm" onClick={onNew} className="h-8 gap-1">
-            <Plus className="size-4" /> New
-          </Button>
+          <div className="flex items-center gap-1">
+            {profileAction}
+            {canCreate ? (
+              <Button size="sm" onClick={onNew} className="h-8 gap-1">
+                <Plus className="size-4" /> New
+              </Button>
+            ) : null}
+          </div>
         </div>
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -80,7 +87,7 @@ export function ConversationSidebar({ conversations, loading, activeId, userId, 
           {loading ? (
             <li className="space-y-2 p-2">
               {[0, 1, 2, 3].map((index) => (
-                <div key={index} className="h-16 animate-pulse rounded-xl bg-muted/40" />
+                <div key={index} className="h-16 animate-pulse rounded-md bg-muted/40" />
               ))}
             </li>
           ) : null}
@@ -106,7 +113,7 @@ export function ConversationSidebar({ conversations, loading, activeId, userId, 
                   onClick={() => onSelect(conversation.id)}
                   aria-current={active ? "true" : undefined}
                   className={cn(
-                    "flex w-full items-start gap-3 rounded-xl border border-transparent p-3 text-left transition-colors",
+                    "flex w-full items-start gap-3 rounded-md border border-transparent p-2.5 text-left transition-colors",
                     active ? "border-border bg-secondary" : "hover:bg-secondary/60",
                   )}
                 >

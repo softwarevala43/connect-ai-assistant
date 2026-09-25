@@ -254,9 +254,7 @@ export function MessageList(props: MessageListProps) {
           {/* hover actions — only allowed operations (no edit/delete/copy/forward) */}
           {!optimistic && (
             <div
-              className={cn(
-                "flex items-center gap-0.5 self-center rounded-lg border border-border/60 bg-popover p-0.5 opacity-0 shadow-sm transition-opacity focus-within:opacity-100 group-hover/msg:opacity-100",
-              )}
+              className="flex items-center gap-0.5 self-center rounded-md border border-border/60 bg-popover p-0.5 opacity-100 shadow-sm transition-opacity lg:opacity-0 lg:focus-within:opacity-100 lg:group-hover/msg:opacity-100"
             >
               {canReact ? (
                 <Popover>
