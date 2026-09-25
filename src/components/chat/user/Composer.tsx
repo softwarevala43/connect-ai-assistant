@@ -64,6 +64,11 @@ export function Composer(props: ComposerProps) {
     autosize();
   }, [text]);
 
+  useEffect(() => () => {
+    if (typingTimer.current) window.clearTimeout(typingTimer.current);
+    onTyping(false);
+  }, [onTyping]);
+
   const detectMention = (value: string, caret: number) => {
     const before = value.slice(0, caret);
     const match = /(^|\s)@([\w-]*)$/.exec(before);
@@ -137,9 +142,9 @@ export function Composer(props: ComposerProps) {
             <span className="font-medium">Replying: </span>
             {replyTo.body || "Attachment"}
           </span>
-          <button type="button" onClick={onCancelReply} aria-label="Cancel reply" className="rounded p-0.5 hover:bg-secondary">
+          <Button type="button" variant="ghost" size="icon" onClick={onCancelReply} aria-label="Cancel reply" className="size-5 rounded-sm">
             <X className="size-3.5" />
-          </button>
+          </Button>
         </div>
       ) : null}
 
@@ -157,9 +162,9 @@ export function Composer(props: ComposerProps) {
               ) : (
                 <span className="text-[10px] text-muted-foreground">ready</span>
               )}
-              <button type="button" onClick={() => onCancelUpload(u.id)} aria-label={`Remove ${u.file.name}`} className="rounded p-0.5 hover:bg-secondary">
+              <Button type="button" variant="ghost" size="icon" onClick={() => onCancelUpload(u.id)} aria-label={`Remove ${u.file.name}`} className="size-5 rounded-sm">
                 <X className="size-3.5" />
-              </button>
+              </Button>
             </li>
           ))}
         </ul>
@@ -170,17 +175,18 @@ export function Composer(props: ComposerProps) {
           <ul
             role="listbox"
             aria-label="Mention a participant"
-            className="absolute bottom-full left-0 z-20 mb-1 w-64 overflow-hidden rounded-xl border border-border bg-popover p-1 shadow-lg"
+            className="absolute bottom-full left-0 z-20 mb-1 w-64 overflow-hidden rounded-md border border-border bg-popover p-1 shadow-lg"
           >
             {mentionCandidates.map((p, index) => (
               <li key={p.id}>
-                <button
+                <Button
                   type="button"
                   role="option"
                   aria-selected={index === mentionIndex}
                   onClick={() => insertMention(p)}
+                  variant="ghost"
                   className={cn(
-                    "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm",
+                    "flex h-auto w-full justify-start gap-2 rounded-sm px-2 py-1.5 text-left text-sm",
                     index === mentionIndex ? "bg-secondary" : "hover:bg-secondary/60",
                   )}
                 >
@@ -189,7 +195,7 @@ export function Composer(props: ComposerProps) {
                   </span>
                   <span className="min-w-0 flex-1 truncate">{p.display_name}</span>
                   <span className="text-xs text-muted-foreground">@{p.handle}</span>
-                </button>
+                </Button>
               </li>
             ))}
           </ul>
@@ -242,17 +248,19 @@ export function Composer(props: ComposerProps) {
             <PopoverContent className="w-64 p-2" align="start" side="top">
               <div className="grid grid-cols-8 gap-0.5">
                 {EMOJIS.map((emoji) => (
-                  <button
+                  <Button
                     key={emoji}
                     type="button"
-                    className="rounded p-1 text-lg hover:bg-secondary"
+                    variant="ghost"
+                    size="icon"
+                    className="size-7 rounded-sm text-base"
                     onClick={() => {
                       setText((t) => t + emoji);
                       textareaRef.current?.focus();
                     }}
                   >
                     {emoji}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </PopoverContent>
@@ -271,7 +279,7 @@ export function Composer(props: ComposerProps) {
               notifyTyping();
             }}
             onKeyDown={onKeyDown}
-            className="max-h-24 min-h-[28px] flex-1 resize-none bg-transparent px-1.5 py-1 text-sm leading-5 outline-none placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-60"
+            className="max-h-24 min-h-7 flex-1 resize-none bg-transparent px-1.5 py-1 text-sm leading-5 outline-none placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-60"
           />
 
           <Tooltip>
