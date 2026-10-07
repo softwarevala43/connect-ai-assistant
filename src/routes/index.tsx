@@ -16,6 +16,8 @@ export const Route = createFileRoute("/")({
         content:
           "Premium 3D AI communication console with live translation, smart replies and enterprise-grade conversation management.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Index,
