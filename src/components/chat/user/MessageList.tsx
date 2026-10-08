@@ -3,6 +3,7 @@ import {
   Bookmark, Check, CheckCheck, Languages, Loader2, MessageSquareReply, Pin,
   RotateCcw, ShieldCheck, Smile, Trash2, WifiOff,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { translateMessage } from "@/lib/translate.functions";
@@ -11,7 +12,51 @@ import type { ConnectionState, PendingMessage } from "@/hooks/use-chat";
 import { UserAvatar, AttachmentCard } from "./media";
 import { cn } from "@/lib/utils";
 
-const QUICK_REACTIONS = ["👍", "❤️", "😂", "🎉", "👀", "✅"];
+const REACTION_OPTIONS = ["👍", "❤️", "😂", "🎉", "👀", "✅", "👏", "🔥", "🙌", "🤔", "😮", "😢", "🙏", "💯", "🚀", "☕", "👎", "💡"];
+
+function ReactionPicker({
+  messageId,
+  reactions,
+  onReact,
+}: {
+  messageId: string;
+  reactions: Record<string, { count: number; mine: boolean }>;
+  onReact: (messageId: string, emoji: string, active: boolean) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button type="button" variant="ghost" size="icon" aria-label="Add reaction" className="size-7">
+          <Smile className="size-3.5" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-1.5" side="top" align="start">
+        <div className="grid grid-cols-6 gap-0.5" role="group" aria-label="Choose a message reaction">
+          {REACTION_OPTIONS.map((emoji) => (
+            <Button
+              key={emoji}
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={`React with ${emoji}`}
+              aria-pressed={reactions[emoji]?.mine ?? false}
+              title={emoji}
+              className={cn("size-8 text-lg", reactions[emoji]?.mine && "bg-primary/10")}
+              onClick={() => {
+                onReact(messageId, emoji, reactions[emoji]?.mine ?? false);
+                setOpen(false);
+              }}
+            >
+              {emoji}
+            </Button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -257,27 +302,7 @@ export function MessageList(props: MessageListProps) {
               className="flex items-center gap-0.5 self-center rounded-md border border-border/60 bg-popover p-0.5 opacity-100 shadow-sm transition-opacity lg:opacity-0 lg:focus-within:opacity-100 lg:group-hover/msg:opacity-100"
             >
               {canReact ? (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button type="button" aria-label="React" className="rounded-md p-1.5 hover:bg-secondary">
-                      <Smile className="size-3.5" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-1" side="top">
-                    <div className="flex gap-0.5">
-                      {QUICK_REACTIONS.map((emoji) => (
-                        <button
-                          key={emoji}
-                          type="button"
-                          className="rounded p-1 text-lg hover:bg-secondary"
-                          onClick={() => onReact(message.id, emoji, groupedReactions[emoji]?.mine ?? false)}
-                        >
-                          {emoji}
-                        </button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <ReactionPicker messageId={message.id} reactions={groupedReactions} onReact={onReact} />
               ) : null}
               {canReply ? (
                 <Tooltip>
@@ -336,19 +361,22 @@ export function MessageList(props: MessageListProps) {
         {Object.keys(groupedReactions).length > 0 ? (
           <div className={cn("flex flex-wrap gap-1", mine ? "pr-1 justify-end" : "pl-9")}>
             {Object.entries(groupedReactions).map(([emoji, info]) => (
-              <button
+              <Button
                 key={emoji}
                 type="button"
+                variant="ghost"
+                size="sm"
                 disabled={!canReact}
                 onClick={() => onReact(message.id, emoji, info.mine)}
                 aria-label={`${info.count} reacted with ${emoji}`}
+                aria-pressed={info.mine}
                 className={cn(
-                  "rounded-full border px-1.5 py-0.5 text-xs transition-colors",
+                  "h-6 min-w-9 rounded-full border px-2 py-0 text-xs transition-colors",
                   info.mine ? "border-primary/50 bg-primary/10" : "border-border/60 bg-secondary/60 hover:bg-secondary",
                 )}
               >
                 {emoji} {info.count}
-              </button>
+              </Button>
             ))}
           </div>
         ) : null}
